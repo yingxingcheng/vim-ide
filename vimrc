@@ -241,6 +241,13 @@ let g:ale_set_highlights = 0
 " Set this variable to 1 to fix files when you save them.
 let g:ale_fix_on_save = 1
 
+"=====================================================
+" Markdown
+"=====================================================
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 0
+let g:vim_markdown_conceal_code_blocks = 0
+
 
 "=====================================================
 " Key map
