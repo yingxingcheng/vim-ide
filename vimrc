@@ -43,7 +43,7 @@ call vundle#begin()
     Plugin 'honza/vim-snippets'                 " snippets repo
 
     "-------------------=== Languages support ===-------------------
-    Plugin 'Valloric/YouCompleteMe'             " Autocomplete plugin
+    " Plugin 'Valloric/YouCompleteMe'             " Autocomplete plugin
 
 
     "------------------YingXing Cheng-------------------------------
@@ -59,6 +59,14 @@ call vundle#begin()
     Plugin 'airblade/vim-gitgutter'             " Atom theme
     Plugin 'sheerun/vim-polyglot'               " multi color for different language
     Plugin 'Yggdroot/indentLine'                " indent line
+    Plugin 'mhinz/vim-startify'
+
+    "-------------------- Latex support ------------------
+    Plugin 'lervag/vimtex'
+    Plugin 'tpope/vim-dispatch'
+    " Plugin 'ckunte/latex-snippets-vim'
+    " Plugin 'Exafunction/codeium.vim'
+
 
 call vundle#end()                           " required
 filetype on
@@ -104,7 +112,7 @@ set clipboard=unnamed                       " use system clipboard
 set exrc                                    " enable usage of additional .vimrc files from working directory
 set secure                                  " prohibit .vimrc files to execute shell, create files, etc...
 
-let mapleader = ","                         " set the leader key
+let mapleader = " "                         " set the leader key
 
 
 " File searchs
@@ -120,12 +128,12 @@ inoremap jk <Esc>
 "=====================================================
 "" Tabs / Buffers settings
 "=====================================================
-tab sball
-set switchbuf=useopen
-set laststatus=2
+" tab sball
+" set switchbuf=useopen
+" set laststatus=2
 " Switching between buffers
 " Set commands to switching between buffers
-:nnoremap <Tab> :bnext!<CR>
+:nnoremap <Tab><Tab> :bnext!<CR>
 :nnoremap <S-Tab> :bprevious!<CR>
 " :nnoremap <C-X> :bp<bar>sp<bar>bn<bar>bd<CR>
 :nnoremap <C-X> :bd<CR>
@@ -156,7 +164,7 @@ let g:airline_powerline_fonts=1
 "=====================================================
 let g:tagbar_autofocus=0
 let g:tagbar_width=42
-autocmd BufEnter *.py :call tagbar#autoopen(0)
+" autocmd BufEnter *.py :call tagbar#autoopen(0)
 
 "=====================================================
 "" NERDTree settings
@@ -185,6 +193,8 @@ augroup END
 " we use a custom command to run python to use differernt python interpreter.
 autocmd FileType python map <buffer> <F5> :w<CR>:exec '!python' shellescape(@%, 1)<CR>
 autocmd FileType python imap <buffer> <F5> <esc>:w<CR>:exec '!python' shellescape(@%, 1)<CR>
+autocmd FileType julia map <buffer> <F5> :w<CR>:exec '!julia' shellescape(@%, 1)<CR>
+autocmd FileType julia imap <buffer> <F5> :w<CR>:exec '!julia' shellescape(@%, 1)<CR>
 
 
 "=====================================================
@@ -215,6 +225,7 @@ nnoremap <leader>d :tab split \| YcmCompleter GoToDefinition<CR>
 let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 let g:SuperTabDefaultCompletionType = '<C-n>'
+let g:ycm_key_list_stop_completion = ['<C-y>', '<CR>']
 
 " better key bindings for UltiSnipsExpandTrigger
 let g:UltiSnipsExpandTrigger = "<tab>"
@@ -232,11 +243,13 @@ let g:ale_echo_msg_format = '[%linter%] %s [%severity%] [%...code...%]'
 """" Enable completion where available.
 let g:ale_completion_enabled = 1
 """ Customize linters that are turned on
-let g:ale_linters = { 'python': ['flake8', 'pydocstyle','bandit','mypy']}
+"let g:ale_linters = { 'python': ['pylint', 'flake8', 'pydocstyle','bandit','mypy']}
+let g:ale_linters = { 'python': ['pylint', 'flake8']}
 let g:ale_fixers = {
             \'*':['remove_trailing_lines', 'trim_whitespace'],
-            \'python': ['black', 'isort', 'autopep8'],
+            \'python': ['black'],
             \}
+"\'python': ['black', 'isort', 'autopep8'],
 let g:ale_set_highlights = 0
 " Set this variable to 1 to fix files when you save them.
 let g:ale_fix_on_save = 1
@@ -267,3 +280,18 @@ cnoremap <C-f> <Right>
 if has("autocmd")
   au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 endif
+
+inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
+let g:tex_conceal = ""
+
+
+function! ZoteroCite()
+  " pick a format based on the filetype (customize at will)
+  let format = &filetype =~ '.*tex' ? 'citep' : 'pandoc'
+  let api_call = 'http://127.0.0.1:23119/better-bibtex/cayw?format='.format.'&brackets=1'
+  let ref = system('curl -s '.shellescape(api_call))
+  return ref
+endfunction
+
+noremap <localleader>z "=ZoteroCite()<CR>p
+inoremap <C-z> <C-r>=ZoteroCite()<CR>
