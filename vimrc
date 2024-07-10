@@ -39,7 +39,7 @@ call vundle#begin()
     " Plugin 'flazz/vim-colorschemes'             " Colorschemes
 
     "-------------------=== Snippets support ===--------------------
-    Plugin 'SirVer/ultisnips'                   " Snippets
+    "Plugin 'SirVer/ultisnips'                   " Snippets
     Plugin 'honza/vim-snippets'                 " snippets repo
 
     "-------------------=== Languages support ===-------------------
@@ -276,13 +276,19 @@ cnoremap <C-j> <Down>
 cnoremap <C-k> <Up>
 cnoremap <C-f> <Right>
 
+nnoremap <C-b> <Left>
+nnoremap <C-j> <Down>
+nnoremap <C-k> <Up>
+nnoremap <C-f> <Right>
+
 " go back to the line last opened
 if has("autocmd")
   au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 endif
 
 inoremap <expr> <CR> pumvisible() ? "\<C-Y>" : "\<CR>"
-let g:tex_conceal = ""
+"let g:tex_conceal = ""
+let g:vimtex_syntax_conceal_disable = 1
 
 
 function! ZoteroCite()
@@ -295,3 +301,8 @@ endfunction
 
 noremap <localleader>z "=ZoteroCite()<CR>p
 inoremap <C-z> <C-r>=ZoteroCite()<CR>
+
+let g:mapleader = " "
+let g:vimtex_view_method = 'skim'
+nmap <leader>v <plug>(vimtex-view)
+nmap <leader>c <plug>(vimtex-compile)
